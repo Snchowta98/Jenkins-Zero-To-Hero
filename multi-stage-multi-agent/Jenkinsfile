@@ -18,12 +18,14 @@ pipeline {
       }
     }
     stage('Run Docker Container') {
+      agent {
+        docker { image 'docker pull nginx:latest' }
             steps {
                 script {
                     echo "Running Docker container..."
 
-                    // pull image
-                    sh "docker pull nginx:latest"
+                    // // pull image
+                    // sh "docker pull nginx:latest"
 
                     // remove existing container if running
                     sh "docker rm -f my-nginx || true"
