@@ -17,30 +17,25 @@ pipeline {
         sh 'node --version'
       }
     }
-    stage('Run Docker Container') {
-      agent {
-        docker { image 'docker pull nginx:latest' }
-            steps {
-                script {
-                    echo "Running Docker container..."
+     stage('Run Docker Container') {
+      agent { label 'docker' }   // <--- ensure you have a node labeled 'docker'
+      steps {
+        script {
+          echo "Running Docker container..."
 
-                    // // pull image
-                    // sh "docker pull nginx:latest"
+          sh "docker rm -f my-nginx || true"
+          sh "docker pull nginx:latest"
 
-                    // remove existing container if running
-                    sh "docker rm -f my-nginx || true"
+          sh '''
+            docker run -d \
+              --name my-nginx \
+              -p 8080:80 \
+              nginx:latest
+          '''
 
-                    // run the container
-                    sh """
-                        docker run -d \
-                        --name my-nginx \
-                        -p 8080:80 \
-                        nginx:latest
-                    """
-
-                    echo "Container started at http://<YOUR-SERVER-IP>:8080"
-                }
-            }
+          echo "Container started at http://<YOUR-SERVER-IP>:8080"
+        }
+      }
     }
   }
 }
