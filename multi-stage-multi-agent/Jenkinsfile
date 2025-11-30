@@ -17,5 +17,28 @@ pipeline {
         sh 'node --version'
       }
     }
+    stage('Run Docker Container') {
+            steps {
+                script {
+                    echo "Running Docker container..."
+
+                    // pull image
+                    sh "docker pull nginx:latest"
+
+                    // remove existing container if running
+                    sh "docker rm -f my-nginx || true"
+
+                    // run the container
+                    sh """
+                        docker run -d \
+                        --name my-nginx \
+                        -p 8080:80 \
+                        nginx:latest
+                    """
+
+                    echo "Container started at http://<YOUR-SERVER-IP>:8080"
+                }
+            }
+    }
   }
 }
