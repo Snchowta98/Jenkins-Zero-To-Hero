@@ -16,19 +16,6 @@ pipeline {
         sh 'node --version'
       }
     }
-
-    stage('Run Docker Container') {
-  agent { label 'any' }   // or 'master' or another label that exists
-  steps {
-    script {
-      sh "docker rm -f my-nginx || true"
-      sh "docker pull nginx:latest"
-      sh '''
-        docker run -d --name my-nginx -p 8080:80 nginx:latest
-      '''
-    }
-  }
-}
   }
 }
   
